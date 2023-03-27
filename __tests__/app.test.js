@@ -3,7 +3,6 @@ const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/test-data/index");
 const request = require("supertest");
 const { app } = require("../app.js");
-const { string } = require("pg-format");
 
 beforeEach(() => {
   return seed(data);
