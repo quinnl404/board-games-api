@@ -1,21 +1,15 @@
-const db = require("../db/connection.js");
+const connection = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
-const {
-  categoryData,
-  commentData,
-  reviewData,
-  userData,
-} = require("../db/data/test-data/index");
+const data = require("../db/data/test-data/index");
 const request = require("supertest");
-const { app, server } = require("../app.js");
+const { app } = require("../app.js");
 
 beforeEach(() => {
-  return seed({ categoryData, commentData, reviewData, userData });
+  return seed(data);
 });
 
 afterAll(() => {
-  server.close();
-  return db.end();
+  return connection.end();
 });
 
 describe("GET /this-will-never-ever-be-an-end-point", () => {
@@ -35,23 +29,7 @@ describe("GET /api/categories", () => {
       .then(({ body }) => {
         const { categories } = body;
         expect(Array.isArray(categories)).toBe(true);
-      });
-  });
-  it("200: returns an array of length 4", () => {
-    return request(app)
-      .get(path)
-      .expect(200)
-      .then(({ body }) => {
-        const { categories } = body;
         expect(categories.length).toBe(4);
-      });
-  });
-  it("200: returns an array of objects with slug and description properties", () => {
-    return request(app)
-      .get(path)
-      .expect(200)
-      .then(({ body }) => {
-        const { categories } = body;
         categories.forEach((category) => {
           expect(category).toMatchObject({
             slug: expect.any(String),

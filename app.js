@@ -1,15 +1,9 @@
 const express = require("express");
 const app = express();
-const {
-  getNonexistantEndpoint,
-  getCategories,
-} = require("./controllers/index.js");
+const { getCategories } = require("./controllers/categories.js");
+const { handleNonexistantEndpoint } = require("./middleware/errorHandlers.js");
 
 app.get("/api/categories", getCategories);
-app.all("/*", getNonexistantEndpoint);
+app.all("/*", handleNonexistantEndpoint);
 
-const server = app.listen(9090, () => {
-  console.log("Server is listening on port 9090.");
-});
-
-module.exports = { app, server };
+module.exports = { app };

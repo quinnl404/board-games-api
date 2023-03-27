@@ -1,6 +1,6 @@
-const { fetchCategories } = require("../models/index.js");
+const { fetchCategories } = require("../models/categories.js");
 
-module.exports = (req, res) => {
+exports.getCategories = (req, res) => {
   fetchCategories().then((categoriesToSend) => {
     res.status(200).send({ categories: categoriesToSend });
   });
