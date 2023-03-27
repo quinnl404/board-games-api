@@ -25,3 +25,39 @@ describe("GET /this-will-never-ever-be-an-end-point", () => {
       .expect(404);
   });
 });
+
+describe("GET /api/categories", () => {
+  const path = "/api/categories";
+  it("200: returns an array", () => {
+    return request(app)
+      .get(path)
+      .expect(200)
+      .then(({ body }) => {
+        const { categories } = body;
+        expect(Array.isArray(categories)).toBe(true);
+      });
+  });
+  it("200: returns an array of length 4", () => {
+    return request(app)
+      .get(path)
+      .expect(200)
+      .then(({ body }) => {
+        const { categories } = body;
+        expect(categories.length).toBe(4);
+      });
+  });
+  it("200: returns an array of objects with slug and description properties", () => {
+    return request(app)
+      .get(path)
+      .expect(200)
+      .then(({ body }) => {
+        const { categories } = body;
+        categories.forEach((category) => {
+          expect(category).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
+        });
+      });
+  });
+});

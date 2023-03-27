@@ -1,7 +1,11 @@
 const express = require("express");
 const app = express();
-const { getNonexistantEndpoint } = require("./controllers/index.js");
+const {
+  getNonexistantEndpoint,
+  getCategories,
+} = require("./controllers/index.js");
 
+app.get("/api/categories", getCategories);
 app.all("/*", getNonexistantEndpoint);
 
 const server = app.listen(9090, () => {
