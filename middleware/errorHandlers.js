@@ -2,6 +2,11 @@ exports.handleNonexistantEndpoint = (req, res) => {
   res.status(404).send({ msg: "Bad endpoint" });
 };
 
+exports.errorPrinter = (err, req, res, next) => {
+  if (err) console.error(err);
+  next(err);
+};
+
 exports.handleCustomErrors = (err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
@@ -10,6 +15,8 @@ exports.handleCustomErrors = (err, req, res, next) => {
 
 exports.handlePSQLThrownError = (err, req, res, next) => {
   if (err.code === "22P02") {
+    res.status(400).send({ msg: "Bad Request" });
+  } else if (err.code === "23502") {
     res.status(400).send({ msg: "Bad Request" });
   } else next(err);
 };
