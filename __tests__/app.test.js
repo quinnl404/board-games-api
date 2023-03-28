@@ -85,7 +85,7 @@ describe("GET: /api/reviews", () => {
       .then(({ body }) => {
         const { reviews } = body;
         expect(reviews.length).toBe(13);
-        expect(reviews).toBeSortedBy("created_at", (descending = false));
+        expect(reviews).toBeSortedBy("created_at", { descending: false });
         reviews.forEach((review) => {
           expect(review).toMatchObject({
             title: expect.any(String),
