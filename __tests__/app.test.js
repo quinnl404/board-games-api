@@ -156,6 +156,49 @@ describe("POST: /api/reviews/:review_id/comments", () => {
           author: "bainesface",
           review_id: expect.any(Number),
           created_at: expect.any(String),
+
+describe("GET: /api/reviews/:review_id/comments", () => {
+  it("404: when accessing a non-existant review", () => {
+    return request(app).get("/api/reviews/20/comments").expect(404);
+  });
+
+  it("400: when supplying an invalid review id (not a number)", () => {
+    return request(app)
+      .get("/api/reviews/aaaa/comments")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  it("200: when accessing a review with no comments", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toEqual([]);
+      });
+  });
+
+  it("200: returns an array of comments pertaining to a review", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments.length).toBe(3);
+        expect(comments).toBeSortedBy("created_at", { descending: false });
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            review_id: expect.any(Number),
+            created_at: expect.any(String),
+          });
+
         });
       });
   });
