@@ -148,3 +148,67 @@ describe("GET: /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("POST: /api/reviews/:review_id/comments", () => {
+  it("400: rejects comments lacking all required fields", () => {
+    const commentToPost = {
+      body: "wooooooaaah what a game !!!",
+    };
+    return request(app)
+      .post("/api/reviews/3/comments")
+      .send(commentToPost)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Incorrect properties on comment object.");
+      });
+  });
+
+  it("400: rejects comments with extra fields", () => {
+    const commentToPost = {
+      username: "bainesface",
+      body: "wooooooaaah what a game !!!",
+      favourite_food: "icecream",
+    };
+    return request(app)
+      .post("/api/reviews/3/comments")
+      .send(commentToPost)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Incorrect properties on comment object.");
+      });
+  });
+
+  it("404: rejects posts to a non-existant review", () => {
+    const commentToPost = {
+      username: "bainesface",
+      body: "wooooooaaah what a game !!!",
+    };
+
+    return request(app)
+      .post("/api/reviews/39/comments")
+      .send(commentToPost)
+      .expect(404);
+  });
+
+  it("201: returns the succesfully created comment", () => {
+    const commentToPost = {
+      username: "bainesface",
+      body: "wooaah what a game !!!",
+    };
+    return request(app)
+      .post("/api/reviews/3/comments")
+      .send(commentToPost)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: "wooaah what a game !!!",
+          votes: expect.any(Number),
+          author: "bainesface",
+          review_id: expect.any(Number),
+          created_at: expect.any(String),
+        });
+      });
+  });
+});
