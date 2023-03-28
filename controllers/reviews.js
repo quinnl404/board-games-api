@@ -23,7 +23,9 @@ exports.postReviewComment = (req, res, next) => {
   const comment = req.body;
   addReviewComment(review_id, comment)
     .then((comment) => res.status(201).send({ comment }))
-    
+    .catch(next);
+};
+
 exports.getReviewCommentsFromId = (req, res, next) => {
   const { review_id } = req.params;
   fetchReviewCommentsFromId(review_id)

@@ -38,37 +38,6 @@ exports.fetchReviews = () => {
     });
 };
 
-
-exports.addReviewComment = (review_id, comment) => {
-  const allowedKeys = ["username", "body"];
-  for (const key of Object.keys(comment)) {
-    if (!allowedKeys.includes(key)) {
-      return Promise.reject({
-        status: 400,
-        msg: "Incorrect properties on comment object.",
-      });
-    }
-  }
-
-  const date = new Date(Date.now());
-  return db
-    .query(`SELECT review_id FROM reviews WHERE review_id = $1;`, [review_id])
-          INSERT INTO comments
-            (body, review_id, author, votes, created_at)
-          VALUES
-            ($1, $2, $3, 0, $4)
-          RETURNING *;
-          `,
-        [comment.body, review_id, comment.username, date]
-      );
-    })
-    .then(({ rows }) => {
-      const postedComment = rows[0];
-      return postedComment;
-  })
-}
-
-
 exports.fetchReviewCommentsFromId = (review_id) => {
   return db
     .query(`SELECT review_id FROM reviews WHERE review_id = $1`, [review_id])
@@ -93,5 +62,46 @@ exports.fetchReviewCommentsFromId = (review_id) => {
     .then(({ rows }) => {
       const comments = rows;
       return comments;
+    });
+};
+
+exports.addReviewComment = (review_id, comment) => {
+  const correctKeys = ["username", "body"];
+  const objectKeys = Object.keys(comment);
+  if (
+    !correctKeys.every((correctKey) => objectKeys.includes(correctKey)) ||
+    !objectKeys.every((objectKey) => correctKeys.includes(objectKey))
+  ) {
+    return Promise.reject({
+      status: 400,
+      msg: "Incorrect properties on comment object.",
+    });
+  }
+
+  const date = new Date(Date.now());
+  return db
+    .query(`SELECT review_id FROM reviews WHERE review_id = $1;`, [review_id])
+    .then(({ rows }) => {
+      const reviews = rows;
+      if (!reviews.length) {
+        return Promise.reject({
+          status: 404,
+          msg: `Review ${review_id} does not exist.`,
+        });
+      }
+      return db.query(
+        `
+          INSERT INTO comments
+            (body, review_id, author, votes, created_at)
+          VALUES
+            ($1, $2, $3, 0, $4)
+          RETURNING *;
+          `,
+        [comment.body, review_id, comment.username, date]
+      );
+    })
+    .then(({ rows }) => {
+      const postedComment = rows[0];
+      return postedComment;
     });
 };
