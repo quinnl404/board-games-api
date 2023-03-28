@@ -76,3 +76,29 @@ describe("GET /api/reviews/:review_id", () => {
       });
   });
 });
+
+describe("GET: /api/reviews", () => {
+  it("200: returns an array of reviews sorted in ascending order by date", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(13);
+        expect(reviews).toBeSortedBy("created_at", (descending = false));
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            title: expect.any(String),
+            designer: expect.any(String),
+            owner: expect.any(String),
+            review_img_url: expect.any(String),
+            review_body: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+});
