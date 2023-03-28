@@ -1,5 +1,6 @@
 const db = require("../db/connection.js");
 const { convertTimestampToDate } = require("../db/seeds/utils.js");
+const { objectHasRequiredKeys } = require("./utils.js");
 
 exports.fetchReviewFromId = (review_id) => {
   return db
@@ -66,12 +67,7 @@ exports.fetchReviewCommentsFromId = (review_id) => {
 };
 
 exports.addReviewComment = (review_id, comment) => {
-  const correctKeys = ["username", "body"];
-  const objectKeys = Object.keys(comment);
-  if (
-    !correctKeys.every((correctKey) => objectKeys.includes(correctKey)) ||
-    !objectKeys.every((objectKey) => correctKeys.includes(objectKey))
-  ) {
+  if (!objectHasRequiredKeys(comment, ["username", "body"])) {
     return Promise.reject({
       status: 400,
       msg: "Incorrect properties on comment object.",
