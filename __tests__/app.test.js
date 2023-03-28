@@ -108,10 +108,6 @@ describe("GET: /api/reviews/:review_id/comments", () => {
     return request(app).get("/api/reviews/20/comments").expect(404);
   });
 
-  it("404: when accessing a review with no comments", () => {
-    return request(app).get("/api/reviews/1/comments").expect(404);
-  });
-
   it("400: when supplying an invalid review id (not a number)", () => {
     return request(app)
       .get("/api/reviews/aaaa/comments")
@@ -119,6 +115,16 @@ describe("GET: /api/reviews/:review_id/comments", () => {
       .then(({ body }) => {
         const { msg } = body;
         expect(msg).toBe("Bad Request");
+      });
+  });
+
+  it("200: when accessing a review with no comments", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toEqual([]);
       });
   });
 

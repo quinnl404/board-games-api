@@ -39,32 +39,27 @@ exports.fetchReviews = () => {
 
 exports.fetchReviewCommentsFromId = (review_id) => {
   return db
-    .query(
-      `
-      SELECT comments.* FROM reviews
-      RIGHT JOIN comments ON (reviews.review_id = comments.review_id)
-      WHERE comments.review_id = $1
-      ORDER BY comments.created_at;
-    `,
-      [review_id]
-    )
+    .query(`SELECT review_id FROM reviews WHERE review_id = $1`, [review_id])
     .then(({ rows }) => {
-      const comments = rows;
-      if (!comments.length) {
+      const reviews = rows;
+      if (!reviews.length) {
         return Promise.reject({
           status: 404,
-          msg: "No comments found.",
+          msg: `Review ${review_id} does not exist.`,
         });
       }
-      console.log(comments);
+      return db.query(
+        `
+          SELECT comments.* FROM reviews
+          RIGHT JOIN comments ON (reviews.review_id = comments.review_id)
+          WHERE comments.review_id = $1
+          ORDER BY comments.created_at;
+        `,
+        [review_id]
+      );
+    })
+    .then(({ rows }) => {
+      const comments = rows;
       return comments;
     });
 };
-
-// {
-//   body: 'I loved this game too!',
-//   votes: 16,
-//   author: 'bainesface',
-//   review_id: 2,
-//   created_at: new Date(1511354613389),
-// },
