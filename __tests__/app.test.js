@@ -249,7 +249,6 @@ describe("PATCH: /api/reviews/:review_id", () => {
       .send(patchObject)
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         const { review } = body;
         expect(review).toMatchObject({
           title: "Ultimate Werewolf",
