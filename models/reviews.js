@@ -131,7 +131,6 @@ exports.editReviewFromId = (review_id, patchObject) => {
       );
     })
     .then(({ rows }) => {
-      console.log(rows);
       const review = rows[0];
       return review;
     });
