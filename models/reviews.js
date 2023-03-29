@@ -1,5 +1,5 @@
+const { patch } = require("superagent");
 const db = require("../db/connection.js");
-const { convertTimestampToDate } = require("../db/seeds/utils.js");
 const { objectHasRequiredKeys } = require("./utils.js");
 
 exports.fetchReviewFromId = (review_id) => {
@@ -99,5 +99,40 @@ exports.addReviewComment = (review_id, comment) => {
     .then(({ rows }) => {
       const postedComment = rows[0];
       return postedComment;
+    });
+};
+
+exports.editReviewFromId = (review_id, patchObject) => {
+  if (!objectHasRequiredKeys(patchObject, ["inc_votes"])) {
+    return Promise.reject({
+      status: 400,
+      msg: "Incorrect properties on patch object.",
+    });
+  }
+  return db
+    .query(`SELECT review_id FROM reviews WHERE review_id = $1`, [review_id])
+    .then(({ rows }) => {
+      if (!rows.length) {
+        return Promise.reject({
+          status: 404,
+          msg: `Review ${review_id} does not exist.`,
+        });
+      }
+    })
+    .then(() => {
+      return db.query(
+        `
+        UPDATE reviews
+        SET votes = votes + $1
+        WHERE review_id = $2
+        RETURNING *;
+      `,
+        [patchObject.inc_votes, review_id]
+      );
+    })
+    .then(({ rows }) => {
+      console.log(rows);
+      const review = rows[0];
+      return review;
     });
 };
