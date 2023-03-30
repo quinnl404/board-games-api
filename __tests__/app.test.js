@@ -57,22 +57,33 @@ describe("GET /api/reviews/:review_id", () => {
 
   it("200: returns a review object with correct properties", () => {
     return request(app)
-      .get("/api/reviews/3")
+      .get("/api/reviews/4")
+
       .expect(200)
       .then(({ body }) => {
         const { review } = body;
         expect(review).toMatchObject({
-          title: "Ultimate Werewolf",
-          designer: "Akihisa Okui",
-          owner: "bainesface",
+          title: "Dolor reprehenderit",
+          designer: "Gamey McGameface",
+          owner: "mallionaire",
           review_img_url:
-            "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700",
-          review_body: "We couldn't find the werewolf!",
+            "https://images.pexels.com/photos/278918/pexels-photo-278918.jpeg?w=700&h=700",
+          review_body:
+            "Consequat velit occaecat voluptate do. Dolor pariatur fugiat sint et proident ex do consequat est. Nisi minim laboris mollit cupidatat et adipisicing laborum do. Sint sit tempor officia pariatur duis ullamco labore ipsum nisi voluptate nulla eu veniam. Et do ad id dolore id cillum non non culpa. Cillum mollit dolor dolore excepteur aliquip. Cillum aliquip quis aute enim anim ex laborum officia. Aliqua magna elit reprehenderit Lorem elit non laboris irure qui aliquip ad proident. Qui enim mollit Lorem labore eiusmod",
           category: "social deduction",
-          created_at: "2021-01-18T10:01:41.251Z",
-          votes: 5,
-          comment_count: 3,
+          created_at: "2021-01-22T11:35:50.936Z",
+          votes: 7,
         });
+      });
+  });
+
+  it("200: returns a review object with a comment count", () => {
+    return request(app)
+      .get("/api/reviews/3")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toHaveProperty("comment_count", 3);
       });
   });
 });
