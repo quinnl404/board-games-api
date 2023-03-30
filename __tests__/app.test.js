@@ -77,15 +77,15 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
-describe("GET: /api/reviews", () => {
-  it("200: returns reviews in ascending order, sorted by date", () => {
+describe.only("GET: /api/reviews", () => {
+  it("200: returns reviews in descending order, sorted by date", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
         expect(reviews.length).toBe(13);
-        expect(reviews).toBeSortedBy("created_at", { descending: false });
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
         reviews.forEach((review) => {
           expect(review).toMatchObject({
             title: expect.any(String),
@@ -99,6 +99,73 @@ describe("GET: /api/reviews", () => {
             comment_count: expect.any(Number),
           });
         });
+      });
+  });
+  it("200: returns an array of reviews correctly filtered according to the category query", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(1);
+        reviews.forEach((review) => {
+          expect(review).toHaveProperty("category", "dexterity");
+        });
+      });
+  });
+  it("200: returns an array of reviews correctly ordered according to the order query", () => {
+    return request(app)
+      .get("/api/reviews?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toBeSortedBy("created_at", { descending: false });
+      });
+  });
+  it("200: returns an array of reviews correctly sorted according to the sort_by query", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=votes")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toBeSortedBy("votes", { descending: true });
+      });
+  });
+  it("200: returns an array of reviews correctly processed by the queries in tandem", () => {
+    return request(app)
+      .get("/api/reviews?order=asc&sort_by=votes&category=social%20deduction")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(11);
+        expect(reviews).toBeSortedBy("votes", { descending: false });
+        reviews.forEach((review) => {
+          expect(review).toHaveProperty("category", "social deduction");
+        });
+      });
+  });
+  it("400: rejects invalid sort_by query values", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=sausage")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("sausage is not a valid sort_by value");
+      });
+  });
+  it("400: rejects invalid order query values", () => {
+    return request(app)
+      .get("/api/reviews?order=sausage")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("sausage is not a valid order value");
+      });
+  });
+  it("400: rejects invalid category query values", () => {
+    return request(app)
+      .get("/api/reviews?category=sausage")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("sausage is not a valid category value");
       });
   });
 });

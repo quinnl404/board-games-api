@@ -16,25 +16,64 @@ exports.fetchReviewFromId = (review_id) => {
     });
 };
 
-exports.fetchReviews = () => {
+exports.fetchReviews = (query) => {
   return db
-    .query(
-      `
-      SELECT reviews.*, count(comments.review_id)::INTEGER AS comment_count FROM reviews
-      LEFT JOIN comments ON (reviews.review_id = comments.review_id)
-      GROUP BY reviews.review_id
-      ORDER BY reviews.created_at;
-      `
-    )
-    .then(({ rows }) => {
-      const reviews = rows;
-      if (!reviews.length) {
-        return Promise.reject({
-          status: 404,
-          msg: "No reviews found.",
-        });
+    .query("SELECT DISTINCT slug FROM categories")
+    .then((categoryResults) => {
+      const categories = categoryResults.rows.map((categoryObject) => {
+        return categoryObject.slug;
+      });
+      const options = {
+        sort_by: [
+          "title",
+          "designer",
+          "owner",
+          "review_body",
+          "category",
+          "created_at",
+          "votes",
+        ],
+        order: ["asc", "desc"],
+        category: categories,
+      };
+
+      const { sort_by = "created_at", order = "desc", category } = query;
+
+      for (const key of Object.keys(options)) {
+        const validValues = options[key];
+        const queryValue = query[key];
+        if (!validValues.includes(queryValue) && queryValue !== undefined) {
+          return Promise.reject({
+            status: 400,
+            msg: `${queryValue} is not a valid ${key} value`,
+          });
+        }
       }
-      return reviews;
+
+      let queryString = `
+      SELECT reviews.*, count(comments.review_id)::INTEGER as comment_count
+      FROM reviews
+      LEFT JOIN comments ON (reviews.review_id = comments.review_id)`;
+
+      if (category) {
+        queryString += `
+        WHERE reviews.category = '${category}'`;
+      }
+
+      queryString += `
+      GROUP BY reviews.review_id
+      ORDER BY ${sort_by} ${order};`;
+
+      return db.query(queryString).then(({ rows }) => {
+        const reviews = rows;
+        if (!reviews.length) {
+          return Promise.reject({
+            status: 404,
+            msg: "No reviews found.",
+          });
+        }
+        return reviews;
+      });
     });
 };
 
