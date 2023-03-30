@@ -16,9 +16,11 @@ const {
   errorPrinter,
 } = require("./middleware/errorHandlers.js");
 const { deleteCommentFromId } = require("./controllers/comments.js");
+const { getUsers } = require("./controllers/users.js");
 
 app.use(express.json());
 app.get("/api/categories", getCategories);
+app.get("/api/users", getUsers);
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewFromId);
 app.patch("/api/reviews/:review_id", patchReviewFromId);

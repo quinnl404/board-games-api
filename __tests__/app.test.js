@@ -22,7 +22,7 @@ describe("GET /this-will-never-ever-be-an-end-point", () => {
 
 describe("GET /api/categories", () => {
   const path = "/api/categories";
-  it("200: returns an array", () => {
+  it("200: returns categories", () => {
     return request(app)
       .get(path)
       .expect(200)
@@ -78,7 +78,7 @@ describe("GET /api/reviews/:review_id", () => {
 });
 
 describe("GET: /api/reviews", () => {
-  it("200: returns an array of reviews sorted in ascending order by date", () => {
+  it("200: returns reviews in ascending order, sorted by date", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -316,6 +316,25 @@ describe("DELETE: /api/comments/:comment_id", () => {
       .expect(204)
       .then(({ body }) => {
         expect(body).toEqual({});
+      });
+  });
+});
+
+describe("GET: /api/users", () => {
+  it("200: returns an array of users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users.length).toBe(4);
+        users.forEach((review) => {
+          expect(review).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
       });
   });
 });
