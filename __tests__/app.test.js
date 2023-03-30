@@ -293,6 +293,25 @@ describe("PATCH: /api/reviews/:review_id", () => {
   });
 });
 
+describe("GET: /api/users", () => {
+  it("200: returns an array of users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users.length).toBe(4);
+        users.forEach((review) => {
+          expect(review).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+});
+
 describe("DELETE: /api/comments/:comment_id", () => {
   it("404: rejects deletes to nonexistant comments", () => {
     return request(app)
