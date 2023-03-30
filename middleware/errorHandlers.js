@@ -3,7 +3,7 @@ exports.handleNonexistantEndpoint = (req, res) => {
 };
 
 exports.errorPrinter = (err, req, res, next) => {
-  if (err) console.error(err);
+  if (err) console.log(err);
   next(err);
 };
 

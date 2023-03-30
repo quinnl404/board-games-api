@@ -236,7 +236,7 @@ describe("PATCH: /api/reviews/:review_id", () => {
       );
   });
 
-  it("400: rejects patches to nonexistant reviews", () => {
+  it("400: rejects patches to invalid review_ids", () => {
     const patchObject = { inc_votes: 5 };
 
     return request(app).patch("/api/reviews/aaa").send(patchObject).expect(400);
@@ -289,6 +289,33 @@ describe("PATCH: /api/reviews/:review_id", () => {
           created_at: "2021-01-18T10:01:41.251Z",
           votes: 2,
         });
+      });
+  });
+});
+
+describe("DELETE: /api/comments/:comment_id", () => {
+  it("404: rejects deletes to nonexistant comments", () => {
+    return request(app)
+      .delete("/api/comments/39")
+      .expect(404)
+      .then(({ body }) => {
+        const notFoundMessage = body;
+        expect(notFoundMessage).toEqual({
+          msg: "Comment 39 does not exist.",
+        });
+      });
+  });
+
+  it("400: rejects deletes to invalid comment_ids", () => {
+    return request(app).delete("/api/comments/aaaa").expect(400);
+  });
+
+  it("204: succesfully deletes a comment and returns no content", () => {
+    return request(app)
+      .delete("/api/comments/3")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
       });
   });
 });
