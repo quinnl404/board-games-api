@@ -58,6 +58,7 @@ describe("GET /api/reviews/:review_id", () => {
   it("200: returns a review object with correct properties", () => {
     return request(app)
       .get("/api/reviews/4")
+
       .expect(200)
       .then(({ body }) => {
         const { review } = body;
@@ -73,6 +74,16 @@ describe("GET /api/reviews/:review_id", () => {
           created_at: "2021-01-22T11:35:50.936Z",
           votes: 7,
         });
+      });
+  });
+
+  it("200: returns a review object with a comment count", () => {
+    return request(app)
+      .get("/api/reviews/3")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toHaveProperty("comment_count", 3);
       });
   });
 });
