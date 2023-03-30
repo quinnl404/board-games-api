@@ -77,7 +77,7 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
-describe.only("GET: /api/reviews", () => {
+describe("GET: /api/reviews", () => {
   it("200: returns reviews in descending order, sorted by date", () => {
     return request(app)
       .get("/api/reviews")
