@@ -435,3 +435,21 @@ describe("GET: /api/users", () => {
       });
   });
 });
+
+describe("GET: /api", () => {
+  const expectedProperties = ["description", "queries", "exampleResponse"];
+  it("200: returns a description of all available endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const { api } = body;
+        Object.keys(api).forEach((endpoint) => {
+          expectedProperties.forEach((expectedProperty) => {
+            console.log(api[endpoint]);
+            expect(api[endpoint]).toHaveProperty(expectedProperty);
+          });
+        });
+      });
+  });
+});
