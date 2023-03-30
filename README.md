@@ -1,6 +1,8 @@
 # Backend Boardgames API
 
-## Setup
+## Project Summary
+
+## Environment Variables
 
 .env files must be created pointing to the test and development databases
 

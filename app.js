@@ -17,8 +17,10 @@ const {
 } = require("./middleware/errorHandlers.js");
 const { deleteCommentFromId } = require("./controllers/comments.js");
 const { getUsers } = require("./controllers/users.js");
+const { getApi } = require("./controllers/api.js");
 
 app.use(express.json());
+app.get("/api", getApi);
 app.get("/api/categories", getCategories);
 app.get("/api/users", getUsers);
 app.get("/api/reviews", getReviews);
