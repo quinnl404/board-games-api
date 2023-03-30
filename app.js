@@ -6,6 +6,7 @@ const {
   getReviews,
   postReviewComment,
   getReviewCommentsFromId,
+  patchReviewFromId,
 } = require("./controllers/reviews.js");
 const {
   handleNonexistantEndpoint,
@@ -19,6 +20,7 @@ app.use(express.json());
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewFromId);
+app.patch("/api/reviews/:review_id", patchReviewFromId);
 app.post("/api/reviews/:review_id/comments", postReviewComment);
 app.get("/api/reviews/:review_id/comments", getReviewCommentsFromId);
 app.all("/*", handleNonexistantEndpoint);

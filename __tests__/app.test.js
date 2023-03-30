@@ -212,3 +212,83 @@ describe("POST: /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("PATCH: /api/reviews/:review_id", () => {
+  it("400: rejects patches lacking the required fields", () => {
+    const patchObject = { spice_level: "maximum" };
+    return request(app)
+      .patch("/api/reviews/3")
+      .send(patchObject)
+      .expect(400)
+      .then(({ body }) =>
+        expect(body.msg).toBe("Incorrect properties on patch object.")
+      );
+  });
+
+  it("400: rejects patches with extraneous fields", () => {
+    const patchObject = { inc_votes: 10, spice_level: "maximum" };
+    return request(app)
+      .patch("/api/reviews/3")
+      .send(patchObject)
+      .expect(400)
+      .then(({ body }) =>
+        expect(body.msg).toBe("Incorrect properties on patch object.")
+      );
+  });
+
+  it("400: rejects patches to nonexistant reviews", () => {
+    const patchObject = { inc_votes: 5 };
+
+    return request(app).patch("/api/reviews/aaa").send(patchObject).expect(400);
+  });
+
+  it("404: rejects patches to nonexistant reviews", () => {
+    const patchObject = { inc_votes: 5 };
+
+    return request(app).patch("/api/reviews/39").send(patchObject).expect(404);
+  });
+
+  it("200: succesfully increments the votes on a review", () => {
+    const patchObject = { inc_votes: 2 };
+    return request(app)
+      .patch("/api/reviews/3")
+      .send(patchObject)
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+          title: "Ultimate Werewolf",
+          designer: "Akihisa Okui",
+          owner: "bainesface",
+          review_img_url:
+            "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700",
+          review_body: "We couldn't find the werewolf!",
+          category: "social deduction",
+          created_at: "2021-01-18T10:01:41.251Z",
+          votes: 7,
+        });
+      });
+  });
+
+  it("200: succesfully decerements the votes on a review", () => {
+    const patchObject = { inc_votes: -3 };
+    return request(app)
+      .patch("/api/reviews/3")
+      .send(patchObject)
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+          title: "Ultimate Werewolf",
+          designer: "Akihisa Okui",
+          owner: "bainesface",
+          review_img_url:
+            "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700",
+          review_body: "We couldn't find the werewolf!",
+          category: "social deduction",
+          created_at: "2021-01-18T10:01:41.251Z",
+          votes: 2,
+        });
+      });
+  });
+});

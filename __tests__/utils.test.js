@@ -111,25 +111,21 @@ describe("objectHasRequiredKeys()", () => {
     const actual = objectHasRequiredKeys(object);
     expect(actual).toBe(true);
   });
-
   test("returns false if given an object with keys and no required keys", () => {
     const object = { hello: "hi" };
     const actual = objectHasRequiredKeys(object);
     expect(actual).toBe(false);
   });
-
   test("returns false if given object is missing a key", () => {
     const object = { a: 1, b: 2 };
     const actual = objectHasRequiredKeys(object, ["a", "b", "c"]);
     expect(actual).toBe(false);
   });
-
   test("returns false if given object has extraneous keys", () => {
     const object = { a: 1, b: 2, c: 3 };
     const actual = objectHasRequiredKeys(object, ["a", "b"]);
     expect(actual).toBe(false);
   });
-
   test("returns true if given object has the required keys", () => {
     const object = { a: 1, b: 2 };
     const actual = objectHasRequiredKeys(object, ["a", "b"]);
