@@ -236,6 +236,12 @@ describe("PATCH: /api/reviews/:review_id", () => {
       );
   });
 
+  it("400: rejects patches to nonexistant reviews", () => {
+    const patchObject = { inc_votes: 5 };
+
+    return request(app).patch("/api/reviews/aaa").send(patchObject).expect(400);
+  });
+
   it("404: rejects patches to nonexistant reviews", () => {
     const patchObject = { inc_votes: 5 };
 
