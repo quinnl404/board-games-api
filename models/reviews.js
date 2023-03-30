@@ -1,4 +1,3 @@
-const { patch } = require("superagent");
 const db = require("../db/connection.js");
 const { objectHasRequiredKeys } = require("./utils.js");
 
