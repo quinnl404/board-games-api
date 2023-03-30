@@ -438,15 +438,26 @@ describe("GET: /api/users", () => {
 
 describe("GET: /api", () => {
   const expectedProperties = ["description", "queries", "exampleResponse"];
+  const expectedEndpoints = [
+    "GET /api",
+    "GET /api/categories",
+    "GET /api/reviews",
+    "GET /api/reviews/:review_id",
+    "GET /api/reviews/:review_id/comments",
+    "POST /api/reviews/:review_id/comments",
+    "PATCH /api/reviews/:review_id",
+    "DELETE /api/comments/:comment_id",
+    "GET /api/users",
+  ];
   it("200: returns a description of all available endpoints", () => {
     return request(app)
       .get("/api")
       .expect(200)
       .then(({ body }) => {
         const { api } = body;
+        expect(Object.keys(api)).toEqual(expectedEndpoints);
         Object.keys(api).forEach((endpoint) => {
           expectedProperties.forEach((expectedProperty) => {
-            console.log(api[endpoint]);
             expect(api[endpoint]).toHaveProperty(expectedProperty);
           });
         });
