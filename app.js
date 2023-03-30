@@ -29,4 +29,4 @@ app.use(handleCustomErrors);
 app.use(handlePSQLThrownError);
 app.use(handleServerErrors);
 
-module.exports = { app };
+module.exports = app;
