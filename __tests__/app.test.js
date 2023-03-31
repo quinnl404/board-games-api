@@ -491,3 +491,66 @@ describe("GET: /api/users/:username", () => {
       });
   });
 });
+
+describe("PATCH: /api/comments/:comment_id", () => {
+  it("400: rejects patches lacking the required fields", () => {
+    const patchObject = { spice_level: "maximum" };
+    return request(app)
+      .patch("/api/comments/3")
+      .send(patchObject)
+      .expect(400)
+      .then(({ body }) =>
+        expect(body.msg).toBe("Incorrect properties on patch object.")
+      );
+  });
+
+  it("400: rejects patches with extraneous fields", () => {
+    const patchObject = { inc_votes: 10, spice_level: "maximum" };
+    return request(app)
+      .patch("/api/comments/3")
+      .send(patchObject)
+      .expect(400)
+      .then(({ body }) =>
+        expect(body.msg).toBe("Incorrect properties on patch object.")
+      );
+  });
+
+  it("400: rejects patches to invalid comment_ids", () => {
+    const patchObject = { inc_votes: 5 };
+
+    return request(app)
+      .patch("/api/comments/aaa")
+      .send(patchObject)
+      .expect(400);
+  });
+
+  it("404: rejects patches to nonexistant comments", () => {
+    const patchObject = { inc_votes: 5 };
+
+    return request(app)
+      .patch("/api/comments/39")
+      .send(patchObject)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment 39 does not exist.");
+      });
+  });
+
+  it("200: succesfully increments the votes on a comment", () => {
+    const patchObject = { inc_votes: 2 };
+    return request(app)
+      .patch("/api/comments/3")
+      .send(patchObject)
+      .expect(200)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toMatchObject({
+          body: "I didn't know dogs could play games",
+          votes: 12,
+          author: "philippaclaire9",
+          review_id: 3,
+          created_at: "2021-01-18T10:09:48.110Z",
+        });
+      });
+  });
+});
