@@ -1,4 +1,4 @@
-const fs = require("node:fs/promises");
+const fs = require("fs/promises");
 
 exports.fetchApi = () => {
   return fs.readFile(`${__dirname}/../endpoints.json`).then((data) => {
