@@ -1,13 +1,5 @@
 const express = require("express");
 const app = express();
-const { getCategories } = require("./controllers/categories.js");
-const {
-  getReviewFromId,
-  getReviews,
-  postReviewComment,
-  getReviewCommentsFromId,
-  patchReviewFromId,
-} = require("./controllers/reviews.js");
 const {
   handleNonexistantEndpoint,
   handlePSQLThrownError,
@@ -15,20 +7,18 @@ const {
   handleServerErrors,
   errorPrinter,
 } = require("./middleware/errorHandlers.js");
-const { deleteCommentFromId } = require("./controllers/comments.js");
-const { getUsers } = require("./controllers/users.js");
-const { getApi } = require("./controllers/api.js");
+const apiRouter = require("./routers/api-router.js");
+const reviewsRouter = require("./routers/reviews-router.js");
+const categoriesRouter = require("./routers/categories-router.js");
+const userRouter = require("./routers/users-router.js");
+const commentsRouter = require("./routers/comments-router");
 
 app.use(express.json());
-app.get("/api", getApi);
-app.get("/api/categories", getCategories);
-app.get("/api/users", getUsers);
-app.get("/api/reviews", getReviews);
-app.get("/api/reviews/:review_id", getReviewFromId);
-app.patch("/api/reviews/:review_id", patchReviewFromId);
-app.post("/api/reviews/:review_id/comments", postReviewComment);
-app.get("/api/reviews/:review_id/comments", getReviewCommentsFromId);
-app.delete("/api/comments/:comment_id", deleteCommentFromId);
+app.use("/api", apiRouter);
+apiRouter.use("/reviews", reviewsRouter);
+apiRouter.use("/categories", categoriesRouter);
+apiRouter.use("/users", userRouter);
+apiRouter.use("/comments", commentsRouter);
 app.all("/*", handleNonexistantEndpoint);
 app.use(errorPrinter);
 app.use(handleCustomErrors);
