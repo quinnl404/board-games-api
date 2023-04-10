@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "bc-nc-games",
   "main": "listen.js",
+  "type": "module",
   "scripts": {
-    "setup-dbs": "psql -f ./db/setup.sql",
-    "seed": "node ./db/seeds/run-seed.js",
-    "test": "jest --runInBand",
+    "build": "npx tsc && cp ./src/db/setup.sql ./built/db/setup.sql && cp ./src/.env.development ./built/.env.development && cp ./src/.env.test ./built/.env.test",
+    "setup-dbs": "psql -f ./built/db/setup.sql",
+    "seed": "node ./built/db/seeds/run-seed.js",
+    "test": "jest --runInBand --detectOpenHandles",
     "prepare": "husky install",
-    "start": "node listen.js",
+    "start": "node ./built/listen.js",
     "seed-prod": "NODE_ENV=production npm run seed"
   },
   "repository": {
@@ -23,19 +25,24 @@
   },
   "homepage": "https://github.com/northcoders/be-nc-games#readme",
   "dependencies": {
+    "@types/pg": "^8.6.6",
     "dotenv": "^16.0.0",
     "express": "^4.18.2",
     "pg": "^8.7.3",
     "pg-format": "^1.0.4"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/supertest": "^2.0.12",
     "husky": "^8.0.2",
-    "jest": "^27.5.1",
+    "jest": "^29.1.0",
     "jest-extended": "^2.0.0",
     "jest-sorted": "^1.0.14",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.0"
   },
   "jest": {
+    "preset": "ts-jest",
     "setupFilesAfterEnv": [
       "jest-sorted",
       "jest-extended/all"
