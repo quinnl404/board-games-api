@@ -29,13 +29,16 @@
     "pg-format": "^1.0.4"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.0",
     "husky": "^8.0.2",
-    "jest": "^27.5.1",
+    "jest": "^29.1.0",
     "jest-extended": "^2.0.0",
     "jest-sorted": "^1.0.14",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.0"
   },
   "jest": {
+    "preset": "ts-jest",
     "setupFilesAfterEnv": [
       "jest-sorted",
       "jest-extended/all"

@@ -1,7 +1,7 @@
 const {
-  convertTimestampToDate,
-  createRef,
-  formatComments,
+convertTimestampToDate,
+createRef,
+formatComments,
 } = require("../db/seeds/utils.js");
 
 const { objectHasRequiredKeys } = require("../models/utils.js");
@@ -55,8 +55,8 @@ describe("createRef", () => {
     let expected = { title1: 1 };
     expect(actual).toEqual(expected);
     actual = createRef(input, "name", "title");
-    expected = { name1: "title1" };
-    expect(actual).toEqual(expected);
+    const expected2 = { name1: "title1" };
+    expect(actual).toEqual(expected2);
   });
   test("returns a reference object when passed an array with many items", () => {
     const input = [
