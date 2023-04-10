@@ -1,8 +1,9 @@
-const connection = require("../db/connection.js");
-const seed = require("../db/seeds/seed.js");
-const data = require("../db/data/test-data/index");
-const request = require("supertest");
-const app = require("../app.js");
+const connection = require("../src/db/connection")
+import seed from "../src/db/seeds/seed"
+import data from "../src/db/data/test-data/index"
+import app from "../src/app"
+import request from "supertest"
+import "supertest"
 import "jest-extended";
 import "jest-sorted";
 
@@ -451,7 +452,7 @@ describe("GET: /api", () => {
     "DELETE /api/comments/:comment_id",
     "GET /api/users",
   ];
-  it("200: returns a description of all available endpoints", () => {
+  it("200: returns a description of all available endpoints", async () => {
     return request(app)
       .get("/api")
       .expect(200)
@@ -463,7 +464,7 @@ describe("GET: /api", () => {
             expect(api[endpoint]).toHaveProperty(expectedProperty);
           });
         });
-      });
+      })
   });
 });
 

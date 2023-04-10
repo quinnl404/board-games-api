@@ -2,9 +2,10 @@ const {
 convertTimestampToDate,
 createRef,
 formatComments,
-} = require("../db/seeds/utils.js");
-
-const { objectHasRequiredKeys } = require("../models/utils.js");
+} = require("../src/db/seeds/utils.js");
+import "jest-extended"
+import "jest-sorted"
+const { objectHasRequiredKeys } = require("../src/models/utils");
 
 describe("convertTimestampToDate", () => {
   test("returns a new object", () => {

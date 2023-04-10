@@ -1,0 +1,133 @@
+const fs = require("fs/promises");
+
+exports.fetchApi = () => {
+  return {
+    "GET /api": {
+      "description": "serves up a json representation of all the available endpoints of the api",
+      "queries": [],
+      "exampleResponse": "this"
+    },
+    "GET /api/categories": {
+      "description": "serves an array of all categories",
+      "queries": [],
+      "exampleResponse": {
+        "categories": [
+          {
+            "description": "Players attempt to uncover each other's hidden role",
+            "slug": "Social deduction"
+          }
+        ]
+      }
+    },
+    "GET /api/reviews": {
+      "description": "serves an array of all reviews",
+      "queries": ["category", "sort_by", "order"],
+      "exampleResponse": {
+        "reviews": [
+          {
+            "title": "One Night Ultimate Werewolf",
+            "designer": "Akihisa Okui",
+            "owner": "happyamy2016",
+            "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+            "category": "hidden-roles",
+            "created_at": 1610964101251,
+            "votes": 5
+          }
+        ]
+      }
+    },
+    "GET /api/reviews/:review_id": {
+      "description": "serves a review",
+      "queries": [],
+      "exampleResponse": {
+        "review_id": 3,
+        "title": "Karma Karma Chameleon",
+        "category": "hidden-roles",
+        "designer": "Rikki Tahta",
+        "owner": "happyamy2016",
+        "review_body": "Try to trick your friends. If you find yourself being dealt the Chamelean card then the aim of the game is simple; blend in... Meanwhile the other players aim to be as vague as they can to not give the game away ",
+        "review_img_url": "https://images.pexels.com/photos/45868/chameleon-reptile-lizard-green-45868.jpeg?w=700&h=700",
+        "created_at": "2021-01-18T10:01:42.151Z",
+        "votes": 5
+      }
+    },
+    "GET /api/reviews/:review_id/comments": {
+      "description": "serves an array of all the comments on a review",
+      "queries": [],
+      "exampleResponse": {
+        "comments": [
+          {
+            "comment_id": 23,
+            "body": "Commodo aliquip sunt commodo elit in esse velit laborum cupidatat anim.",
+            "review_id": 3,
+            "author": "happyamy2016",
+            "votes": 10,
+            "created_at": "2021-03-27T14:15:21.110Z"
+          },
+          {
+            "comment_id": 22,
+            "body": "Ex id ipsum dolore non cillum anim sint duis nisi anim deserunt nisi minim.",
+            "review_id": 3,
+            "author": "jessjelly",
+            "votes": 9,
+            "created_at": "2021-03-27T14:15:31.110Z"
+          }
+        ]
+      }
+    },
+    "POST /api/reviews/:review_id/comments": {
+      "description": "posts a comment on a review",
+      "queries": [],
+      "exampleRequest": {
+        "username": "bainesface",
+        "body": "wooaah what a game !!! loved this review!! :)"
+      },
+      "exampleResponse": {
+        "username": "bainesface",
+        "body": "wooaah what a game !!! loved this review!! :)"
+      }
+    },
+    "PATCH /api/reviews/:review_id": {
+      "description": "increments the vote amount on a review by the supplied inc_votes value and serves with the updates review",
+      "queries": [],
+      "exampleRequest": {
+        "inc_votes": 1
+      },
+      "exampleResponse": {
+        "review_id": 3,
+        "title": "Karma Karma Chameleon",
+        "category": "hidden-roles",
+        "designer": "Rikki Tahta",
+        "owner": "happyamy2016",
+        "review_body": "Try to trick your friends. If you find yourself being dealt the Chamelean card then the aim of the game is simple; blend in... Meanwhile the other players aim to be as vague as they can to not give the game away ",
+        "review_img_url": "https://images.pexels.com/photos/45868/chameleon-reptile-lizard-green-45868.jpeg?w=700&h=700",
+        "created_at": "2021-01-18T10:01:42.151Z",
+        "votes": 6
+      }
+    },
+    "DELETE /api/comments/:comment_id": {
+      "description": "deletes a comment on a review",
+      "queries": [],
+      "exampleResponse": {}
+    },
+    "GET /api/users": {
+      "description": "serves an array of all users",
+      "queries": [],
+      "exampleResponse": {
+        "users": [
+          {
+            "username": "tickle122",
+            "name": "Tom Tickle",
+            "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+          },
+          {
+            "username": "grumpy19",
+            "name": "Paul Grump",
+            "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013"
+          }
+        ]
+      }
+    }
+  }  
+}
+
