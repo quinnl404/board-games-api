@@ -12,8 +12,10 @@ const reviewsRouter = require("./routers/reviews-router.js");
 const categoriesRouter = require("./routers/categories-router.js");
 const userRouter = require("./routers/users-router.js");
 const commentsRouter = require("./routers/comments-router");
+const cors = require("cors");
 
 app.use(express.json());
+app.use(cors());
 app.use("/api", apiRouter);
 apiRouter.use("/reviews", reviewsRouter);
 apiRouter.use("/categories", categoriesRouter);
