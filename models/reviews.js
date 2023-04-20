@@ -39,6 +39,7 @@ exports.fetchReviews = (query) => {
           "category",
           "created_at",
           "votes",
+          "comment_count",
         ],
         order: ["asc", "desc"],
         category: categories,
